@@ -11,9 +11,14 @@ import sys
 current_path = os.path.abspath(getsourcefile(lambda: 0))
 current_dir = os.path.dirname(current_path)
 sys.path.append(current_dir + "/..")
-from server import app
+from server import app, set_nn
+
 
 app.config["TESTING"] = True
+# create trained NN
+from digit_recognizor import create_trained_nn
+nn = create_trained_nn()
+set_nn(nn)
 
 
 class MyTest(TestCase):
@@ -29,16 +34,13 @@ class ShowRecogitionJSON(MyTest):
 
 class DigitPredictor(MyTest):
     def test_image_recognition(self):
-        # create trained NN
-        from digit_recognizor import create_trained_nn
-        self.nn = create_trained_nn()
 
         # get image in good format
         imagefile = "./tests/fixtures/1a_.png"
         image = ndimage.imread(imagefile, flatten=True)
         image = np.array([image]).reshape(28, 28, 1)
 
-        self.assertEquals(self.nn.predict(image), 1)
+        self.assertEquals(nn.predict(image), 1)
 
 
 if __name__ == "__main__":
