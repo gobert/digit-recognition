@@ -40,6 +40,12 @@ class ShowRecogitionJSON(MyTest):
                                     data={"image": image})
         self.assertEquals(response.status, "400 BAD REQUEST")
 
+    def test_with_big_images(self):
+        image = open("./tests/fixtures/big.JPG")
+        response = self.client.post("/recognize.json",
+                                    data={"image": image})
+        self.assertEquals(response.status, "200 OK")
+
     def test_without_image(self):
         response = self.client.post("/recognize.json")
         self.assertEquals(response.status, "400 BAD REQUEST")
@@ -47,11 +53,9 @@ class ShowRecogitionJSON(MyTest):
 
 class DigitPredictor(MyTest):
     def test_image_recognition(self):
-
         # get image in good format
         imagefile = "./tests/fixtures/1a_.png"
         image = ndimage.imread(imagefile, flatten=True)
-        image = np.array([image]).reshape(28, 28, 1)
 
         self.assertEquals(nn.predict(image), 1)
 

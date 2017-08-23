@@ -64,8 +64,10 @@ class NeuralNetwork():
         batches = gen.flow(self.X_train, self.y_train, batch_size=64)
         history = self.model.fit_generator(batches, batches.n, nb_epoch=1)
 
-    def predict(self, x):
-        X = np.array([x])
+    def predict(self, image):
+        image = preformat_image(image)
+
+        X = np.array([image])
         return self.model.predict_classes(X, verbose=0)[0]
 
 
@@ -84,3 +86,14 @@ def create_trained_nn():
     batches, val_batches = nn.split_train_test()
     nn.fit(batches, val_batches)
     return nn
+
+
+def preformat_image(image):
+    import scipy.misc
+
+    # resize image like the training set: 28x28
+    width = height = 28
+    image = scipy.misc.imresize(image, (height, width))
+
+    # add one shape
+    return np.array([image]).reshape(width, height, 1)

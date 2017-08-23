@@ -16,8 +16,7 @@ class Controller():
 
     def recognize_json(self):
         try:
-            image = np.array([self.__image__()]).reshape(28, 28, 1)
-            recognized = self.nn.predict(image)
+            recognized = self.nn.predict(self.__image__())
 
             return flask.jsonify({"digit": recognized})
         except InputError as e:
