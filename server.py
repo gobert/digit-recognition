@@ -2,8 +2,14 @@ import os
 import sys
 
 import flask
+from raven.contrib.flask import Sentry
+
 import numpy as np
 from scipy import ndimage
+
+app = flask.Flask(__name__)
+sentry_uri = os.environ.get("SENTRY_URI", "")
+sentry = Sentry(app, dsn=sentry_uri)
 
 
 class InputError(Exception):
@@ -13,6 +19,9 @@ class InputError(Exception):
 class Controller():
     def __init__(self, nn):
         self.nn = nn
+
+    def debug_error():
+        raise Exception("Dummy exception to test error logging on SEntry")
 
     def recognize_json(self):
         try:
@@ -38,7 +47,9 @@ def set_nn(nn):
     self.controller = Controller(nn)
 
 
-app = flask.Flask(__name__)
+@app.route("/_debug/error")
+def debug_error():
+    return controller.debug_error()
 
 
 @app.route("/recognize.json", methods=["POST"])
