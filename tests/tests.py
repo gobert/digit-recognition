@@ -30,8 +30,8 @@ class ShowRecogitionJSON(MyTest):
 class DigitPredictor(MyTest):
     def test_image_recognition(self):
         # create trained NN
-        from digit_predictor import train_nn
-        self.nn = train_nn()
+        from digit_recognizor import create_trained_nn
+        self.nn = create_trained_nn()
 
         # get image in good format
         imagefile = "./tests/fixtures/1a_.png"

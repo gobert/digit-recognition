@@ -69,7 +69,7 @@ class NeuralNetwork():
         return self.model.predict_classes(X, verbose=0)[0]
 
 
-def train_nn():
+def create_trained_nn():
     # import data
     train = pd.read_csv("db/train_sample5.csv")
 
