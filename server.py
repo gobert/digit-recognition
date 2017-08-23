@@ -1,6 +1,13 @@
 import os
 import sys
+
 import flask
+import numpy as np
+from scipy import ndimage
+
+
+class InputError(Exception):
+    pass
 
 
 class Controller():
@@ -8,7 +15,22 @@ class Controller():
         self.nn = nn
 
     def recognize_json(self):
-        return flask.jsonify({"digit": "-1/12"})
+        try:
+            image = np.array([self.__image__()]).reshape(28, 28, 1)
+            recognized = self.nn.predict(image)
+
+            return flask.jsonify({"digit": recognized})
+        except InputError as e:
+            return flask.jsonify({"Error": "No image found"}), 400
+        except IOError as e:
+            return flask.jsonify({"Error": "Image can not be read"}), 400
+
+    def __image__(self):
+        imagefile = flask.request.files.get("image", None)
+        if not imagefile:
+            raise InputError("No image detected")
+        else:
+            return ndimage.imread(imagefile, flatten=True)
 
 
 def set_nn(nn):

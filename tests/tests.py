@@ -27,9 +27,22 @@ class MyTest(TestCase):
 
 
 class ShowRecogitionJSON(MyTest):
+    def test_with_correct_image(self):
+        image = open("./tests/fixtures/1a_.png")
+        response = self.client.post("/recognize.json",
+                                    data={"image": image})
+        self.assertEquals(response.status, "200 OK")
+        self.assertEquals(response.json, {"digit": 1})
+
+    def test_with_incorrect_image(self):
+        image = open("./tests/fixtures/corrupted.png")
+        response = self.client.post("/recognize.json",
+                                    data={"image": image})
+        self.assertEquals(response.status, "400 BAD REQUEST")
+
     def test_without_image(self):
         response = self.client.post("/recognize.json")
-        self.assertEquals(response.status, "200 OK")
+        self.assertEquals(response.status, "400 BAD REQUEST")
 
 
 class DigitPredictor(MyTest):
