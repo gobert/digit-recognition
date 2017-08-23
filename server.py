@@ -1,10 +1,14 @@
 import os
-from flask import Flask
+import flask
 
-from controllers import Controller
+
+class Controller():
+    def recognize_json(self):
+        return flask.jsonify({"digit": "-1/12"})
+
+
 controller = Controller()
-
-app = Flask(__name__)
+app = flask.Flask(__name__)
 
 
 @app.route("/recognize.json", methods=["POST"])
