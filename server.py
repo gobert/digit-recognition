@@ -20,7 +20,7 @@ class Controller():
     def __init__(self, nn):
         self.nn = nn
 
-    def debug_error():
+    def debug_error(self):
         raise Exception("Dummy exception to test error logging on SEntry")
 
     def recognize_json(self):
