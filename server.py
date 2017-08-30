@@ -23,6 +23,13 @@ class Controller():
     def debug_error(self):
         raise Exception("Dummy exception to test error logging on SEntry")
 
+    def show_index(self):
+        return flask.render_template("index.html")
+
+    def recognize(self):
+        recognized = self.nn.predict(self.__image__())
+        return flask.render_template("recognition.html", recognized=recognized)
+
     def recognize_json(self):
         try:
             recognized = self.nn.predict(self.__image__())
@@ -47,14 +54,29 @@ def set_nn(nn):
     self.controller = Controller(nn)
 
 
+@app.route("/")
+def index():
+    return controller.show_index()
+
+
 @app.route("/_debug/error")
 def debug_error():
     return controller.debug_error()
 
 
+@app.route("/recognize", methods=["POST"])
+def recognize():
+    return controller.recognize()
+
+
 @app.route("/recognize.json", methods=["POST"])
 def recognize_json():
     return controller.recognize_json()
+
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return flask.render_template('500.html'), 500
 
 
 if __name__ == "__main__":
